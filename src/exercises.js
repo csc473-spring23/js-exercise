@@ -1,3 +1,5 @@
+import { SCRIPTS } from "./script_data";
+
 // https://eloquentjavascript.net/05_higher_order.html#h_TcUD2vzyMe
 
 // These are borrowed from Eloquent Javascript.
@@ -18,8 +20,22 @@ function reduce(array, combine, start) {
   return current;
 }
 
+function characterScript(c) {
+  let code = c.codePointAt(0);
+  for (let script of SCRIPTS) {
+    if (
+      script.ranges.some(([from, to]) => {
+        return code >= from && code < to;
+      })
+    ) {
+      return script;
+    }
+  }
+  return null;
+}
+
 export function flatten(arrs) {
-  // TODO: Use map + concat to implement "flatten"
+  // TODO: Use reduce + concat to implement "flatten"
 }
 
 export function every(array, test) {}
