@@ -16,3 +16,5 @@ sketch
 
 dist/
 !dist/index.html
+
+.vscode

@@ -1,5 +1,10 @@
 import { describe, expect, test } from "@jest/globals";
-import { flatten, every, dominantDirection } from "./exercises";
+import {
+  flatten,
+  every,
+  dominantDirection,
+  characterScript,
+} from "./exercises";
 
 describe("flatten", () => {
   test("flatten [[1,2],[3,4]]", () => {
@@ -18,11 +23,15 @@ describe("every", () => {
   });
 
   test("all odd", () => {
-    expect(every([1, 3, 5], (x) => x % 2 == 1)).toBe(true);
+    expect(every([1, 3, 5], (x) => x % 2 === 1)).toBe(true);
   });
 
   test("not all even", () => {
-    expect(every([1, 2, 3], (x) => x % 2 == 0)).toBe(false);
+    expect(every([1, 2, 3], (x) => x % 2 === 0)).toBe(false);
+  });
+
+  test("empy array should be true", () => {
+    expect(every([], (x) => false)).toBe(true);
   });
 });
 
