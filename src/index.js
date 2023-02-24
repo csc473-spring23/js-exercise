@@ -10,13 +10,24 @@ function submitHandler(ev) {
   fetchCat(x, y);
 }
 
+function hasCat() {
+  return $("img").length > 0;
+}
+
 function injectCat(response) {
   if (response.status === 200) {
     response.blob().then((img) => {
       const objURL = URL.createObjectURL(img);
       const image = document.createElement("img");
       image.src = objURL;
-      document.getElementById("cat").append(image);
+      if (hasCat()) {
+        console.log("replacing cat");
+        console.log($("img"));
+        // now replace the kitten if there's already one present
+        $("img").replaceWith(image);
+      } else {
+        $("#cat").append(image);
+      }
     });
   }
 }
