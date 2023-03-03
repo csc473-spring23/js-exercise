@@ -21,8 +21,6 @@ function injectCat(response) {
       const image = document.createElement("img");
       image.src = objURL;
       if (hasCat()) {
-        console.log("replacing cat");
-        console.log($("img"));
         // now replace the kitten if there's already one present
         $("img").replaceWith(image);
       } else {
@@ -34,11 +32,13 @@ function injectCat(response) {
 
 function fetchCat(x, y) {
   let url = buildUrl(x, y);
-  fetch(url).then(injectCat);
+  // fetch returns a Promise, i.e. it's asynchronous
+  fetch(url).then(injectCat, (reason) => {
+    console.log("Oh no, we failed", reason);
+  });
 }
 
 $(function () {
   // this function is called when the dom is loaded + ready
-  let catDiv = $("#cat");
   $("#submit").on("click", submitHandler);
 });
