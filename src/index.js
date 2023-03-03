@@ -1,3 +1,6 @@
+import "./main.css";
+import { validateCurrency } from "./currency";
+
 const buildUrl = (fromCurrency, toCurrency) =>
   `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/${fromCurrency}/${toCurrency}.json`;
 
@@ -10,9 +13,25 @@ function submitHandler(ev) {
   // make sure we suppress the form submission
   ev.preventDefault();
   // fetch the inputs
-  let from = document.getElementById("from-currency").value.toLowerCase();
-  let to = document.getElementById("to-currency").value.toLowerCase();
-  console.log(`From ${from} to ${to}`);
+  let fromRaw = document.getElementById("from-currency").value;
+  let toRaw = document.getElementById("to-currency").value;
+  let from = fromRaw.toLowerCase();
+  let to = toRaw.toLowerCase();
+
+  let invalidCurrencies = [fromRaw, toRaw].filter(
+    (curr) => !validateCurrency(curr)
+  );
+
+  if (invalidCurrencies.length > 0) {
+    if (invalidCurrencies.length === 1) {
+      alert(`${invalidCurrencies[0]} is not a valid currency!`);
+    } else {
+      let [first, second] = invalidCurrencies;
+      alert(`${first} and ${second} are not valid currencies!`);
+    }
+    return;
+  }
+
   getExchangeRate(from, to);
 }
 

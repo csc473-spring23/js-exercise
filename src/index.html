@@ -7,8 +7,10 @@
   <body>
     <header><h1>Foreign Exchange Lookup</h1></header>
     <form id="lookup-form">
-      <label>From: <input id="from-currency" type="text" /></label>
-      <label>To: <input id="to-currency" type="text" /></label>
+      <label>From: <input id="from-currency" type="text" required /></label>
+      <label
+        >To: <input id="to-currency" type="text" maxlength="3" required
+      /></label>
       <button id="submit" type="Submit">Submit</button>
     </form>
     <div id="rate"></div>
