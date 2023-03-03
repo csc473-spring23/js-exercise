@@ -1,44 +1,59 @@
-import $ from "jquery";
+const buildUrl = (fromCurrency, toCurrency) =>
+  `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/${fromCurrency}/${toCurrency}.json`;
 
-const CAT_ENDPOINT = "http://placekitten.com/";
-const buildUrl = (x, y) => `${CAT_ENDPOINT}/${x}/${y}`;
-
+/**
+ * Submit handler for the input form.
+ *
+ * @param {Event} ev (the event)
+ */
 function submitHandler(ev) {
+  // make sure we suppress the form submission
   ev.preventDefault();
-  let x = document.getElementById("x").value;
-  let y = document.getElementById("y").value;
-  fetchCat(x, y);
+  // fetch the inputs
+  let from = document.getElementById("from-currency").value.toLowerCase();
+  let to = document.getElementById("to-currency").value.toLowerCase();
+  console.log(`From ${from} to ${to}`);
+  getExchangeRate(from, to);
 }
 
-function hasCat() {
-  return $("img").length > 0;
+function getExchangeRate(fromCurrency, toCurrency) {
+  const url = buildUrl(fromCurrency, toCurrency);
+  fetch(url).then((resp) => displayResult(fromCurrency, toCurrency, resp));
 }
 
-function injectCat(response) {
-  if (response.status === 200) {
-    response.blob().then((img) => {
-      const objURL = URL.createObjectURL(img);
-      const image = document.createElement("img");
-      image.src = objURL;
-      if (hasCat()) {
-        // now replace the kitten if there's already one present
-        $("img").replaceWith(image);
-      } else {
-        $("#cat").append(image);
-      }
-    });
-  }
-}
-
-function fetchCat(x, y) {
-  let url = buildUrl(x, y);
-  // fetch returns a Promise, i.e. it's asynchronous
-  fetch(url).then(injectCat, (reason) => {
-    console.log("Oh no, we failed", reason);
+/**
+ * Parse the result and display it.
+ *
+ * @param {string} fromCurrency
+ * @param {string} toCurrency
+ * @param {Response} response
+ */
+function displayResult(fromCurrency, toCurrency, response) {
+  return response.json().then((data) => {
+    let date = data.date; //shorthand for data["date"]
+    let exchangeRate = data[toCurrency];
+    injectRateSentence(fromCurrency, toCurrency, exchangeRate, date);
   });
 }
 
-$(function () {
-  // this function is called when the dom is loaded + ready
-  $("#submit").on("click", submitHandler);
-});
+/**
+ *
+ * @param {string} fromCurrency
+ * @param {string} toCurrency
+ * @param {number} exchangeRate
+ * @param {string} date
+ */
+function injectRateSentence(fromCurrency, toCurrency, exchangeRate, date) {
+  let sentence = `1 ${fromCurrency} is ${exchangeRate} ${toCurrency} on ${date}.`;
+  // find our div and populate the sentence
+  let targetDiv = document.getElementById("rate");
+  let p = document.createElement("p");
+  p.append(sentence);
+  targetDiv.appendChild(p);
+}
+
+(function () {
+  // attach a click handler to the submit button
+  const submitButton = document.getElementById("submit");
+  submitButton.addEventListener("click", submitHandler);
+})();
